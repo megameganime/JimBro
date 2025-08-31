@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:jim_bro/widgets/weight_chart.dart' show WeightChart;
 
 void main() {
   runApp(MyApp());
@@ -51,7 +52,7 @@ class _MyAppState extends State<MyApp> {
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: Colors.white,
-        selectedItemColor: Colors.orange,
+        selectedItemColor: Colors.indigoAccent[700],
         unselectedItemColor: Colors.grey[600],
       ),
     );
@@ -75,7 +76,7 @@ class _MyAppState extends State<MyApp> {
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: Colors.black,
-        selectedItemColor: Colors.orange,
+        selectedItemColor: Colors.indigoAccent[700],
         unselectedItemColor: Colors.grey[400],
       ),
       textTheme: TextTheme(
@@ -102,6 +103,11 @@ class HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   bool _isWeeklyView = false; // false = daily, true = weekly
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   // Sample data for charts
   final List<FlSpot> caloriesDataDaily = [
     FlSpot(0, 1800),
@@ -119,33 +125,6 @@ class HomePageState extends State<HomePage> {
     FlSpot(2, 14800),
     FlSpot(3, 15800),
   ];
-
-  final List<FlSpot> weightData = [
-    FlSpot(0, 75.2),
-    FlSpot(1, 75.0),
-    FlSpot(2, 74.8),
-    FlSpot(3, 75.1),
-    FlSpot(4, 74.9),
-    FlSpot(5, 74.7),
-    FlSpot(6, 74.5),
-  ];
-
-  final double weightGoal = 73.0; // Weight goal in kg
-
-  // Calculate dynamic Y-axis range for weight chart
-  double get _weightChartMinY {
-    final dataValues = weightData.map((spot) => spot.y).toList();
-    final minDataValue = dataValues.reduce((a, b) => a < b ? a : b);
-    final minValue = [minDataValue, weightGoal].reduce((a, b) => a < b ? a : b);
-    return minValue - 1.0; // Add some padding
-  }
-
-  double get _weightChartMaxY {
-    final dataValues = weightData.map((spot) => spot.y).toList();
-    final maxDataValue = dataValues.reduce((a, b) => a > b ? a : b);
-    final maxValue = [maxDataValue, weightGoal].reduce((a, b) => a > b ? a : b);
-    return maxValue + 1.0; // Add some padding
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +162,7 @@ class HomePageState extends State<HomePage> {
       title: _buildLogo(isDark),
       actions: [
         IconButton(
-          icon: Icon(Icons.settings, color: Colors.orange),
+          icon: Icon(Icons.settings, color: Colors.indigoAccent[700]),
           onPressed: () => _onItemTapped(3),
         ),
       ],
@@ -197,7 +176,7 @@ class HomePageState extends State<HomePage> {
         Container(
           padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.orange,
+            color: Colors.indigoAccent[700],
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(Icons.fitness_center, color: Colors.white, size: 24),
@@ -206,7 +185,7 @@ class HomePageState extends State<HomePage> {
         Text(
           'JimBro',
           style: TextStyle(
-            color: Colors.orange,
+            color: Colors.indigoAccent[700],
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),
@@ -222,14 +201,14 @@ class HomePageState extends State<HomePage> {
       icon: Icon(
         icon,
         color: isSelected
-            ? Colors.orange
+            ? Colors.indigoAccent[700]
             : (isDark ? Colors.grey[400] : Colors.grey[600]),
       ),
       label: Text(
         label,
         style: TextStyle(
           color: isSelected
-              ? Colors.orange
+              ? Colors.indigoAccent[700]
               : (isDark ? Colors.grey[400] : Colors.grey[600]),
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
@@ -259,7 +238,7 @@ class HomePageState extends State<HomePage> {
         children: [
           _buildCaloriesChart(isDark),
           SizedBox(height: 16),
-          _buildWeightChart(isDark),
+          WeightChart(isDark: isDark),
           SizedBox(height: 16),
           _buildPlanOfTheDay(isDark),
           SizedBox(height: 16),
@@ -294,7 +273,7 @@ class HomePageState extends State<HomePage> {
                       _isWeeklyView = value;
                     });
                   },
-                  activeThumbColor: Colors.orange,
+                  activeThumbColor: Colors.indigoAccent[700],
                   inactiveThumbColor: isDark
                       ? Colors.grey[600]
                       : Colors.grey[400],
@@ -413,175 +392,7 @@ class HomePageState extends State<HomePage> {
                           ? caloriesDataWeekly
                           : caloriesDataDaily,
                       isCurved: true,
-                      color: Colors.orange,
-                      barWidth: 3,
-                      dotData: FlDotData(show: true),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildWeightChart(bool isDark) {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Weight',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.grey[800],
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.green.withValues(alpha: 0.3),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.flag, color: Colors.green, size: 14),
-                      SizedBox(width: 4),
-                      Text(
-                        'Goal: ${weightGoal.toStringAsFixed(1)}kg',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.green,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            SizedBox(
-              height: 200,
-              child: LineChart(
-                LineChartData(
-                  minY: _weightChartMinY,
-                  maxY: _weightChartMaxY,
-                  gridData: FlGridData(
-                    show: true,
-                    drawVerticalLine: true,
-                    drawHorizontalLine: true,
-                    getDrawingHorizontalLine: (value) {
-                      return FlLine(
-                        color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
-                        strokeWidth: 1,
-                      );
-                    },
-                    getDrawingVerticalLine: (value) {
-                      return FlLine(
-                        color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
-                        strokeWidth: 1,
-                      );
-                    },
-                  ),
-                  extraLinesData: ExtraLinesData(
-                    horizontalLines: [
-                      HorizontalLine(
-                        y: weightGoal,
-                        color: Colors.green,
-                        strokeWidth: 2,
-                        dashArray: [8, 4], // Creates dotted line pattern
-                        label: HorizontalLineLabel(
-                          show: true,
-                          alignment: Alignment.topRight,
-                          padding: EdgeInsets.only(right: 8, top: 2),
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          labelResolver: (line) => '${weightGoal.toStringAsFixed(1)}kg',
-                        ),
-                      ),
-                    ],
-                  ),
-                  titlesData: FlTitlesData(
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 35,
-                        getTitlesWidget: (value, meta) {
-                          return Text(
-                            value.toStringAsFixed(1),
-                            style: TextStyle(
-                              color: isDark
-                                  ? Colors.grey[400]
-                                  : Colors.grey[600],
-                              fontSize: 10,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (value, meta) {
-                          const days = [
-                            'Mon',
-                            'Tue',
-                            'Wed',
-                            'Thu',
-                            'Fri',
-                            'Sat',
-                            'Sun',
-                          ];
-                          if (value.toInt() < days.length) {
-                            return Text(
-                              days[value.toInt()],
-                              style: TextStyle(
-                                color: isDark
-                                    ? Colors.grey[400]
-                                    : Colors.grey[600],
-                                fontSize: 10,
-                              ),
-                            );
-                          }
-                          return Text('');
-                        },
-                      ),
-                    ),
-                    topTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    rightTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                  ),
-                  borderData: FlBorderData(
-                    show: true,
-                    border: Border.all(
-                      color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
-                      width: 1,
-                    ),
-                  ),
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: weightData,
-                      isCurved: true,
-                      color: Colors.blue,
+                      color: Colors.indigoAccent[700],
                       barWidth: 3,
                       dotData: FlDotData(show: true),
                     ),
@@ -634,7 +445,7 @@ class HomePageState extends State<HomePage> {
             color: Colors.orange.withValues(alpha: isDark ? 0.2 : 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: Colors.orange, size: 32),
+          child: Icon(icon, color: Colors.indigoAccent[700], size: 32),
         ),
         SizedBox(height: 8),
         Text(
@@ -676,7 +487,11 @@ class HomePageState extends State<HomePage> {
           children: [
             Row(
               children: [
-                Icon(Icons.lightbulb, color: Colors.orange, size: 24),
+                Icon(
+                  Icons.lightbulb,
+                  color: Colors.indigoAccent[700],
+                  size: 24,
+                ),
                 SizedBox(width: 8),
                 Text(
                   'Today\'s Recommendation',
@@ -709,16 +524,16 @@ class HomePageState extends State<HomePage> {
     });
     // Handle navigation to different pages
     switch (index) {
-      case 0:
+      case 0: // Home
         // Home - already here
         break;
-      case 1:
+      case 1: // Workouts
         // Navigate to Workouts page
         break;
-      case 2:
+      case 2: // Stats
         // Navigate to Stats page
         break;
-      case 3:
+      case 3: // Settings
         // Navigate to Settings page (where theme toggle would be)
         break;
     }
