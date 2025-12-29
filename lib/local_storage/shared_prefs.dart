@@ -8,7 +8,7 @@ class SharedPrefsService {
     await prefs.setDouble('weightGoal', weight);
   }
 
-// Get weight goal as double
+  // Get weight goal as double
   static Future<double> getWeightGoal() async {
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getDouble('weightGoal');
@@ -45,4 +45,34 @@ class SharedPrefsService {
     }).toList();
   }
 
+  // Unit prefs (store internal data as kilograms; display/entry may be lbs)
+  static const String _useLbsKey = 'useLbs';
+
+  /// Save whether user prefers lbs (true) or kg (false)
+  static Future<void> setUseLbs(bool useLbs) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_useLbsKey, useLbs);
+  }
+
+  /// Read user's preference. Defaults to false (kg).
+  static Future<bool> getUseLbs() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_useLbsKey) ?? false;
+  }
+
+  /// Convert kg -> lbs
+  static double kgToLbs(double kg) => kg * 2.2046226218;
+
+  /// Convert lbs -> kg
+  static double lbsToKg(double lbs) => lbs / 2.2046226218;
+
+  /// Format a weight (internal kg) according to preference.
+  static String formatWeight(double kg, {required bool useLbs, int decimals = 1}) {
+    if (useLbs) {
+      final value = kgToLbs(kg);
+      return '${value.toStringAsFixed(decimals)} lb';
+    } else {
+      return '${kg.toStringAsFixed(decimals)} kg';
+    }
+  }
 }

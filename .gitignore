@@ -86,3 +86,6 @@ coverage/
 
 # Environment variables
 .env
+
+# to-do and notes
+.todos
