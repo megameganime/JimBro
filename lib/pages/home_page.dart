@@ -463,6 +463,13 @@ class HomePageState extends State<HomePage> with RouteAware {
 
   void _onItemTapped(int index) {
     const bottomNavItemCount = 3; // keep in sync with BottomNavigationBar items
+
+    // Navigate to Workouts page when workouts item tapped
+    if (index == 1) {
+      Navigator.of(context).pushNamed('/workouts');
+      return;
+    }
+
     if (index >= 0 && index < bottomNavItemCount) {
       setState(() {
         _selectedIndex = index;

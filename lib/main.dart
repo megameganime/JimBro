@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jim_bro/pages/home_page.dart';
 import 'package:jim_bro/pages/settings_page.dart';
 import 'package:jim_bro/pages/weight_edit_page.dart';
+import 'package:jim_bro/pages/workouts_page.dart';
 import 'package:provider/provider.dart';
 import 'package:jim_bro/theme/theme_provider.dart';
 
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
       routes: {
       '/settings': (ctx) => SettingsPage(),
       '/weight-edit': (ctx) => WeightEditPage(),
+      '/workouts': (ctx) => WorkoutsPage(),
       },
       debugShowCheckedModeBanner: false,
     );
