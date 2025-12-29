@@ -18,14 +18,44 @@ class SharedPrefsService {
     return value;
   }
 
-  // Save daily weight entries as list of strings
-  static Future<void> datedWeights(List<WeightEntry> weight) async {
+  /// Upsert a single dated weight entry (replace same calendar date or append).
+  /// This merges with whatever is already in prefs and avoids overwriting old data.
+  static Future<void> upsertDatedWeight(WeightEntry entry) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(
-      'datedWeights',
-      weight.map((e) => '${e.date.toIso8601String()},${e.weight}').toList(),
-    );
+    final list = prefs.getStringList('datedWeights') ?? [];
+
+    final newLine = '${entry.date.toIso8601String()},${entry.weight}';
+
+    final idx = list.indexWhere((s) {
+      final parts = s.split(',');
+      if (parts.isEmpty) return false;
+      try {
+        final d = DateTime.parse(parts[0]);
+        return d.year == entry.date.year &&
+            d.month == entry.date.month &&
+            d.day == entry.date.day;
+      } catch (_) {
+        return false;
+      }
+    });
+
+    if (idx != -1) {
+      list[idx] = newLine;
+    } else {
+      list.add(newLine);
+    }
+
+    await prefs.setStringList('datedWeights', list);
   }
+
+  // Save daily weight entries as list of strings
+  // static Future<void> datedWeights(List<WeightEntry> weight) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setStringList(
+  //     'datedWeights',
+  //     weight.map((e) => '${e.date.toIso8601String()},${e.weight}').toList(),
+  //   );
+  // }
 
   static Future<List<WeightEntry>> getWeeklyWeight() async {
     final prefs = await SharedPreferences.getInstance();
