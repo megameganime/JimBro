@@ -48,15 +48,6 @@ class SharedPrefsService {
     await prefs.setStringList('datedWeights', list);
   }
 
-  // Save daily weight entries as list of strings
-  // static Future<void> datedWeights(List<WeightEntry> weight) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.setStringList(
-  //     'datedWeights',
-  //     weight.map((e) => '${e.date.toIso8601String()},${e.weight}').toList(),
-  //   );
-  // }
-
   static Future<List<WeightEntry>> getWeeklyWeight() async {
     final prefs = await SharedPreferences.getInstance();
     final weightList = prefs.getStringList('datedWeights');

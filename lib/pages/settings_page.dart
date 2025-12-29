@@ -91,17 +91,15 @@ class _SettingsPageState extends State<SettingsPage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          ListTile(
-            leading:  Icon(Provider.of<ThemeProvider>(context).isDarkMode()
+          SwitchListTile(
+            secondary:  Icon(Provider.of<ThemeProvider>(context).isDarkMode()
                 ? Icons.dark_mode
                 : Icons.light_mode),
             title: const Text('Dark theme'),
-            trailing: Switch(
-              value: Provider.of<ThemeProvider>(context).isDarkMode(),
-              onChanged: (value) {
-                Provider.of<ThemeProvider>(context, listen: false).toggleTheme(value);
-              },
-            ),
+            value: Provider.of<ThemeProvider>(context).isDarkMode(),
+            onChanged: (value) {
+              Provider.of<ThemeProvider>(context, listen: false).toggleTheme(value);
+            },
           ),
 
           const Divider(),

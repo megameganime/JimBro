@@ -383,23 +383,6 @@ class WeightChartState extends State<WeightChart> {
                 final double? weight = double.tryParse(weightController.text);
                 if (weight != null) {
                     final today = DateTime.now();
-                  // setState(() {
-                  //   // push weight to list of weight per date, if date already has weight, replace it
-                  //   // Find index of today's entry in weightData
-                  //   final index = weightData.indexWhere(
-                  //     (entry) =>
-                  //         entry.date.year == today.year &&
-                  //         entry.date.month == today.month &&
-                  //         entry.date.day == today.day,
-                  //   );
-                  //   if (index != -1) {
-                  //     // Update today's weight
-                  //     weightData[index] = WeightEntry(today, weight);
-                  //   } else {
-                  //     // Add new entry for today
-                  //     weightData.add(WeightEntry(today, weight));
-                  //   }
-                  // });
                     _showPrompt = false;
                   await SharedPrefsService.upsertDatedWeight(WeightEntry(today, weight));
                 }
